@@ -5,7 +5,7 @@
 FROM alpine:3.8 as builder
 
 # LibreSSL Version (See: https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/)
-ARG LIBRESSL_VERSION=2.7.4
+ARG LIBRESSL_VERSION=2.8.0
 ARG LIBRESSL_GPG=663AF51BD5E4D8D5
 
 # Nginx Version (See: https://nginx.org/en/CHANGES)
