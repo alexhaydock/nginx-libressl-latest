@@ -159,9 +159,9 @@ RUN cd /usr/src/nginx \
 FROM alpine:3.8
 LABEL maintainer "Alex Haydock <alex@alexhaydock.co.uk>"
 
-COPY --from=builder /usr/src/nginx /usr/src/nginx
-COPY --from=builder /usr/src/modules /usr/src/modules
-COPY --from=builder /usr/src/libressl/.openssl /usr/src/libressl/.openssl
+COPY --from=builder /usr/src/nginx \
+                    /usr/src/modules \
+                    /usr/src/libressl/.openssl
 
 RUN set -xe \
     \
@@ -229,7 +229,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
 # Runtime settings
-EXPOSE 80
 STOPSIGNAL SIGTERM
 CMD ["nginx", "-g", "daemon off;"]
-
