@@ -2,7 +2,7 @@
 #   https://github.com/nginxinc/docker-nginx/blob/e3e35236b2c77e02266955c875b74bdbceb79c44/mainline/alpine/Dockerfile
 
 # --- Build Container --- #
-FROM arm32v6/alpine:3.8 as builder
+FROM arm64v8/alpine:3.8 as builder
 
 # LibreSSL Version (See: https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/)
 ARG LIBRESSL_VERSION=2.8.0
@@ -156,7 +156,7 @@ RUN cd /usr/src/nginx \
 
 
 # --- Runtime Container --- #
-FROM arm32v6/alpine:3.8
+FROM arm64v8/alpine:3.8
 LABEL maintainer "Alex Haydock <alex@alexhaydock.co.uk>"
 
 COPY --from=builder /usr/src/nginx \
