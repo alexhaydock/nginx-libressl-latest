@@ -154,14 +154,18 @@ RUN cd /usr/src/nginx \
     && ./configure $CONFIG \
     && make -j$(getconf _NPROCESSORS_ONLN)
 
+# Move the source into a single place
+RUN mkdir -p /tmp/buildsource/libressl
+RUN mv -fv /usr/src/nginx/ /tmp/buildsource/nginx/
+RUN mv -fv /usr/src/modules/ /tmp/buildsource/modules/
+RUN mv -fv /usr/src/libressl/.openssl/ /tmp/buildsource/libressl/.openssl/
+
 
 # --- Runtime Container --- #
 FROM arm32v6/alpine:3.8
 LABEL maintainer "Alex Haydock <alex@alexhaydock.co.uk>"
 
-COPY --from=builder /usr/src/nginx \
-                    /usr/src/modules \
-                    /usr/src/libressl/.openssl
+COPY --from=builder /tmp/buildsource /usr/src
 
 RUN set -xe \
     \
