@@ -228,9 +228,9 @@ RUN set -xe \
     && echo "" && nginx -V
 
 # Add the default Nginx config files
-# (these are taken directly from the Nginx team's Docker repo without modification)
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
+# (these are pulled directly from the Nginx team's Docker repo without modification)
+ADD https://raw.githubusercontent.com/nginxinc/docker-nginx/master/mainline/alpine/nginx.conf /etc/nginx/nginx.conf
+ADD https://raw.githubusercontent.com/nginxinc/docker-nginx/master/mainline/alpine/nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
 # Runtime settings
 STOPSIGNAL SIGTERM
