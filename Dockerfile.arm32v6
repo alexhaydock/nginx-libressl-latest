@@ -213,10 +213,6 @@ RUN set -xe \
 # Bring in tzdata so users can set the timezone through environment variables
     && apk add --no-cache tzdata \
     \
-# Forward request and error logs to docker log collector
-    && ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log \
-    \
 # Remove our virtual metapackages
     && apk del .installdeps .gettext \
     && mv /tmp/envsubst /usr/local/bin/ \
