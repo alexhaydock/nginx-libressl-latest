@@ -4,6 +4,11 @@
 
 This container builds the [latest mainline Nginx](https://nginx.org/en/CHANGES) with the [latest LibreSSL release](https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/). It was created to aid with the easy deployment of TLS 1.3 services at a time when most Linux distributions were not packaging a version of OpenSSL that could handle it.
 
+There are versions of this container which build against:
+* [BoringSSL](https://github.com/alexhaydock/BoringNginx)
+* [LibreSSL](https://github.com/alexhaydock/nginx-libressl-latest)
+* [OpenSSL](https://github.com/alexhaydock/nginx-openssl-latest)
+
 ### Run This Container (Testing)
 Run this container as a quick test (it will listen on http://127.0.0.1 and you will see logs directly in the terminal when connections are made):
 ```
