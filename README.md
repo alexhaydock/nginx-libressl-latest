@@ -12,7 +12,7 @@ There are versions of this container which build against:
 ### Quick Run This Container (Testing on x86_64)
 Run this container as a quick test (it will listen on http://127.0.0.1 and you will see logs directly in the terminal when connections are made):
 ```
-docker run --rm -it -p 80:80 alexhaydock/nginx-openssl-latest
+docker run --rm -it -p 80:80 alexhaydock/nginx-libressl-latest
 ```
 
 ### Quick Run This Container (Production on x86_64)
