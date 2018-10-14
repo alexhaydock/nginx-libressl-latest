@@ -24,7 +24,7 @@ docker run -d -p 80:80 -p 443:443 -v /path/to/nginx.conf:/etc/nginx.conf:ro --na
 ### Build This Container Locally
 If you have a regular install of Docker on an `x64_64` machine, you can build this container like so:
 ```
-docker build -t nginx-libressl-latest https://github.com/alexhaydock/nginx-libressl-latest.git
+docker build --rm -t nginx-libressl-latest https://github.com/alexhaydock/nginx-libressl-latest.git
 ```
 
 You can now use the run commands from above, simply substituting `alexhaydock/nginx-libressl-latest` with `nginx-libressl-latest`.
@@ -41,9 +41,9 @@ You may also wish to use this if you are using Silverblue or another of Red Hat'
 
 Clone this repo and build with:
 ```
-git clone https://github.com/alexhaydock/nginx-libressl-latest.git
-cd BoringNginx
-sudo podman build -t nginx-libressl-latest .
+Build with:
+```
+sudo podman build --rm -t nginx-libressl-latest github.com/alexhaydock/nginx-libressl-latest
 ```
 
 You can now run the container using the same run commands as above, simply substituting `docker` with `podman`, and `alexhaydock/nginx-libressl-latest` with `nginx-libressl-latest`.
