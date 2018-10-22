@@ -39,8 +39,6 @@ Podman is Red Hat's answer to Docker, and you may wish to use this particularly 
 
 You may also wish to use this if you are using Silverblue or another of Red Hat's atomic distributions which ship Podman natively.
 
-Clone this repo and build with:
-```
 Build with:
 ```
 sudo podman build --rm -t nginx-libressl-latest github.com/alexhaydock/nginx-libressl-latest
