@@ -4,6 +4,9 @@
 # --- Build Container --- #
 FROM alpine:3.8 as builder
 
+# Nginx User UID/GID
+ARG NGINX_ID=6666
+
 # LibreSSL Version (See: https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/)
 ARG LIBRESSL_VERSION=2.8.2
 ARG LIBRESSL_GPG=663AF51BD5E4D8D5
@@ -104,8 +107,8 @@ RUN set -xe \
     \
 # Download and prepare Nginx
     && cd /usr/src \
-    && addgroup -S nginx \
-    && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
+    && addgroup -S -g $NGINX_ID nginx \
+    && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx -u $NGINX_ID nginx \
     && apk add --no-cache --virtual .build-deps \
         gcc \
         libc-dev \
@@ -160,6 +163,9 @@ RUN mv -fv /usr/src/nginx/ /tmp/buildsource/nginx/
 RUN mv -fv /usr/src/modules/ /tmp/buildsource/modules/
 RUN mv -fv /usr/src/libressl/.openssl/ /tmp/buildsource/libressl/.openssl/
 
+# Backup our NGINX_ID environment variable
+RUN echo "$NGINX_ID" > /tmp/buildsource/nginx_id
+
 # Download GeoIP Database
 RUN apk add --no-cache geoip wget
 RUN echo "Downloading GeoIP database..."
@@ -175,12 +181,14 @@ COPY --from=builder /usr/share/GeoIP/GeoIPv6.dat /usr/share/GeoIP/GeoIPv6.dat
 
 RUN set -xe \
     \
+# Set the NGINX_ID environment variable again
+    && export NGINX_ID="$(cat /usr/src/nginx_id)" \
 # Re-add the Nginx user
-    && addgroup -S nginx \
-    && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
+    && addgroup -S -g $NGINX_ID nginx \
+    && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx -u $NGINX_ID nginx \
 	\
 # Add some more deps to install Nginx
-    && apk add --no-cache --virtual .installdeps binutils make \
+    && apk add --no-cache --virtual .installdeps binutils make wget \
     \
 # Install Nginx
     && cd /usr/src/nginx \
@@ -219,6 +227,11 @@ RUN set -xe \
 # Bring in tzdata so users can set the timezone through environment variables
     && apk add --no-cache tzdata \
     \
+# Add the default Nginx config files
+# (these are pulled directly from the Nginx team's Docker repo without modification)
+    && wget https://raw.githubusercontent.com/nginxinc/docker-nginx/master/mainline/alpine/nginx.conf -O /etc/nginx/nginx.conf \
+    && wget https://raw.githubusercontent.com/nginxinc/docker-nginx/master/mainline/alpine/nginx.vh.default.conf -O /etc/nginx/conf.d/default.conf \
+    \
 # Remove our virtual metapackages
     && apk del .installdeps .gettext \
     && mv /tmp/envsubst /usr/local/bin/ \
@@ -226,13 +239,18 @@ RUN set -xe \
 # Delete source files to save space in final image
     && rm -rf /usr/src/* \
     \
-# Print built version (for debug purposes)
+# Make sure ownership is correct on everything Nginx will need to write to.
+# This means we can run the container as the Nginx user if we want to.
+    && chown -R $NGINX_ID:$NGINX_ID "/etc/nginx" \
+    && chown -R $NGINX_ID:$NGINX_ID "/var/cache/nginx" \
+    && chown -R $NGINX_ID:$NGINX_ID "/var/log/nginx" \
+    && touch "/var/run/nginx.pid" \
+    && chown $NGINX_ID:$NGINX_ID "/var/run/nginx.pid" \
+    && touch "/var/run/nginx.lock" \
+    && chown $NGINX_ID:$NGINX_ID "/var/run/nginx.lock" \
+    \
+# Print final built version (for debug purposes)
     && echo "" && nginx -V
-
-# Add the default Nginx config files
-# (these are pulled directly from the Nginx team's Docker repo without modification)
-ADD https://raw.githubusercontent.com/nginxinc/docker-nginx/master/mainline/alpine/nginx.conf /etc/nginx/nginx.conf
-ADD https://raw.githubusercontent.com/nginxinc/docker-nginx/master/mainline/alpine/nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
 # Runtime settings
 STOPSIGNAL SIGTERM

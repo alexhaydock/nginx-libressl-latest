@@ -47,3 +47,13 @@ sudo podman build --rm -t nginx-libressl-latest github.com/alexhaydock/nginx-lib
 ```
 
 You can now run the container using the same run commands as above, simply substituting `docker` with `podman`, and `alexhaydock/nginx-libressl-latest` with `nginx-libressl-latest`.
+
+### Running Without Root
+You can lock down this container and run without root and dropping all capabilities by using the `--user` and ``--cap-drop=ALL` arguments:
+```
+docker run --rm -it -p 80:8080 --user 6666 --cap-drop=ALL alexhaydock/nginx-libressl-latest
+```
+
+You will need to make sure that the UID you pick matches the one you have set as the `NGINX_ID` in the `Dockerfile`, and that any configs which you mount into the container are owned by this UID (it does not need to exist on the host system).
+
+If you are running rootless like this, you will also want to ensure that the `nginx.conf` does not attempt to listen on any ports below `1000` (you can still listen on `:80` and `:443` externally since the Docker daemon runs as root and can handle this - Nginx does not need to).
