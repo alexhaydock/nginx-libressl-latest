@@ -4,16 +4,16 @@
 # --- Build Container --- #
 FROM alpine:3.8 as builder
 
-# Nginx User UID/GID
-ARG NGINX_ID=6666
-
 # LibreSSL Version (See: https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/)
 ARG LIBRESSL_VERSION=2.8.2
 ARG LIBRESSL_GPG=663AF51BD5E4D8D5
 
 # Nginx Version (See: https://nginx.org/en/CHANGES)
-ARG NGINX_VERSION=1.15.5
+ARG NGINX_VERSION=1.15.6
 ARG NGINX_GPG=B0F4253373F8F6F510D42178520A9993A1C052F8
+
+# Nginx User UID/GID
+ARG NGINX_ID=6666
 
 # Nginx build config
 ARG CONFIG="\
@@ -183,6 +183,7 @@ RUN set -xe \
     \
 # Set the NGINX_ID environment variable again
     && export NGINX_ID="$(cat /usr/src/nginx_id)" \
+    \
 # Re-add the Nginx user
     && addgroup -S -g $NGINX_ID nginx \
     && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx -u $NGINX_ID nginx \
