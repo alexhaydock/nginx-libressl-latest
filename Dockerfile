@@ -11,7 +11,7 @@ RUN geoipupdate -v
 
 
 # --- Nginx Build Container --- #
-FROM alpine:3.8 as builder
+FROM alpine:3.9 as builder
 
 # LibreSSL Version (See: https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/)
 ARG LIBRESSL_VERSION=2.9.0
@@ -175,7 +175,7 @@ RUN echo "$NGINX_ID" > /tmp/buildsource/nginx_id
 
 
 # --- Runtime Container --- #
-FROM alpine:3.8
+FROM alpine:3.9
 LABEL maintainer "Alex Haydock <alex@alexhaydock.co.uk>"
 
 COPY --from=builder /tmp/buildsource /usr/src
