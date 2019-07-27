@@ -11,14 +11,14 @@ RUN geoipupdate -v
 
 
 # --- Nginx Build Container --- #
-FROM alpine:3.9 as builder
+FROM alpine:3.10 as builder
 
-# LibreSSL Version (See: https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/)
-ARG LIBRESSL_VERSION=2.9.0
+# LibreSSL Version (See: https://www.libressl.org/)
+ARG LIBRESSL_VERSION=2.9.2
 ARG LIBRESSL_GPG=663AF51BD5E4D8D5
 
 # Nginx Version (See: https://nginx.org/en/CHANGES)
-ARG NGINX_VERSION=1.15.9
+ARG NGINX_VERSION=1.16
 ARG NGINX_GPG=B0F4253373F8F6F510D42178520A9993A1C052F8
 
 # Nginx User UID/GID
