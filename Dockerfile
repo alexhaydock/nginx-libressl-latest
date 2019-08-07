@@ -14,7 +14,7 @@ RUN geoipupdate -v
 FROM alpine:3.10 as builder
 
 # LibreSSL Version (See: https://www.libressl.org/)
-ARG LIBRESSL_VERSION=2.9.2
+ARG LIBRESSL_VERSION=3.0.0
 ARG LIBRESSL_GPG=663AF51BD5E4D8D5
 
 # Nginx Version (See: https://nginx.org/en/CHANGES)
@@ -231,8 +231,8 @@ RUN set -xe \
     \
 # Add the default Nginx config files
 # (these are pulled directly from the Nginx team's Docker repo without modification)
-    && wget https://raw.githubusercontent.com/nginxinc/docker-nginx/master/mainline/alpine/nginx.conf -O /etc/nginx/nginx.conf \
-    && wget https://raw.githubusercontent.com/nginxinc/docker-nginx/master/mainline/alpine/nginx.vh.default.conf -O /etc/nginx/conf.d/default.conf \
+    && wget https://hg.nginx.org/pkg-oss/raw-file/tip/alpine/nginx.conf -O /etc/nginx/nginx.conf \
+    && wget https://hg.nginx.org/pkg-oss/raw-file/tip/alpine/default.conf -O /etc/nginx/conf.d/default.conf \
     \
 # Remove our virtual metapackages
     && apk del .installdeps .gettext \
