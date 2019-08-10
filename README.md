@@ -30,7 +30,7 @@ You can now use the run commands from above, simply substituting `registry.gitla
 ### Running Without Root
 You can lock down this container and run without root and dropping all capabilities by using the `--user` and `--cap-drop=ALL` arguments:
 ```
-docker run --rm -it -p 80:8080 --user 6666 --cap-drop=ALL registry.gitlab.com/alexhaydock/nginx-openssl
+docker run --rm -it -p 80:8080 --user 6666 --cap-drop=ALL registry.gitlab.com/alexhaydock/nginx-libressl
 ```
 
 You will need to make sure that the UID you pick matches the one you have set as the `NGINX_ID` in the `Dockerfile`, and that any configs which you mount into the container are owned by this UID (it does not need to exist on the host system).
