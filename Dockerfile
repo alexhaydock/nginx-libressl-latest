@@ -14,7 +14,7 @@ RUN geoipupdate -v
 FROM alpine:3.10 as builder
 
 # LibreSSL Version (See: https://www.libressl.org/)
-ARG LIBRESSL_VERSION=3.0.0
+ARG LIBRESSL_VERSION=3.0.1
 ARG LIBRESSL_GPG=663AF51BD5E4D8D5
 
 # Nginx Version (See: https://nginx.org/en/CHANGES)
