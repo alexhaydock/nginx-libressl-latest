@@ -1,6 +1,13 @@
 # Most of the below is based on the Nginx Team's Alpine Dockerfile
 #   https://github.com/nginxinc/docker-nginx/blob/e3e35236b2c77e02266955c875b74bdbceb79c44/mainline/alpine/Dockerfile
 
+# --- MaxMind GeoIP Container --- #
+FROM ubuntu:latest as geoip
+RUN apt-get update && apt-get install geoipupdate -y
+COPY GeoIP.conf /etc/GeoIP.conf
+RUN geoipupdate -v
+
+
 # --- Nginx Build Container --- #
 FROM alpine:3 as builder
 
@@ -172,6 +179,8 @@ LABEL name "nginx-libressl"
 LABEL version 1.16.1
 
 COPY --from=builder /tmp/buildsource /usr/src
+# See this page for GeoIP info: https://github.com/leev/ngx_http_geoip2_module#example-usage
+COPY --from=geoip /var/lib/GeoIP/GeoLite2-Country.mmdb /var/lib/GeoIP/GeoLite2-Country.mmdb
 
 RUN set -xe \
     \

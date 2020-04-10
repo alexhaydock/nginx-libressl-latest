@@ -1,0 +1,61 @@
+---
+# Lint all Dockerfiles in this repo
+docker-lint:
+  image: projectatomic/dockerfile-lint
+  stage: .pre
+  script:
+    - dockerfile_lint -f Dockerfile
+    - dockerfile_lint -f Dockerfile-geoip
+
+# Docker buildx for multiplatform
+buildx:
+  image: docker:stable-git
+  stage: .pre
+  variables:
+    GIT_STRATEGY: none
+  artifacts:
+    paths:
+      - buildx
+    expire_in: 6 hours
+  services:
+    - docker:stable-dind
+  script:
+    - export DOCKER_BUILDKIT=1
+    - git clone git://github.com/docker/buildx ./docker-buildx
+    - docker build --platform=local -o . ./docker-buildx
+
+# I will unify these build steps once more when this GitLab CI issue is fixed:
+# https://gitlab.com/gitlab-com/support-forum/issues/5036
+build-amd64:
+  image: docker:stable
+  stage: build
+  services:
+    - name: docker:stable-dind
+      command: ["--experimental"]
+  retry: 2
+  before_script:
+    - mkdir -p ~/.docker/cli-plugins
+    - mv buildx ~/.docker/cli-plugins/docker-buildx
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker buildx create --use --name build-amd64
+    - docker buildx build --load --platform linux/amd64 -t "$CI_REGISTRY_IMAGE" -t "$CI_REGISTRY_IMAGE:x86_64" -f ./Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE"
+
+build-aarch64:
+  image: docker:stable
+  stage: build
+  services:
+    - name: docker:stable-dind
+      command: ["--experimental"]
+  retry: 2
+  before_script:
+    - mkdir -p ~/.docker/cli-plugins
+    - mv buildx ~/.docker/cli-plugins/docker-buildx
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker buildx create --use --name build-aarch64
+    - docker buildx build --load --platform linux/arm64 -t "$CI_REGISTRY_IMAGE:aarch64" -f ./Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE:aarch64"
