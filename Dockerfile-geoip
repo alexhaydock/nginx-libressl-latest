@@ -16,7 +16,7 @@ ARG LIBRESSL_VERSION=3.1.0
 ARG LIBRESSL_GPG=663AF51BD5E4D8D5
 
 # Nginx Version (See: https://nginx.org/en/CHANGES)
-ARG NGINX_VERSION=1.16.1
+ARG NGINX_VERSION=1.18.0
 ARG NGINX_GPG=B0F4253373F8F6F510D42178520A9993A1C052F8
 
 # Nginx User UID/GID
@@ -176,7 +176,7 @@ RUN echo "$NGINX_ID" > /tmp/buildsource/nginx_id
 FROM alpine:3
 LABEL maintainer "Alex Haydock <alex@alexhaydock.co.uk>"
 LABEL name "nginx-libressl"
-LABEL version 1.16.1
+LABEL version 1.18.0
 
 COPY --from=builder /tmp/buildsource /usr/src
 # See this page for GeoIP info: https://github.com/leev/ngx_http_geoip2_module#example-usage
