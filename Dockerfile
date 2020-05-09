@@ -5,7 +5,7 @@
 FROM alpine:3 as builder
 
 # LibreSSL Version (See: https://www.libressl.org/)
-ARG LIBRESSL_VERSION=3.1.0
+ARG LIBRESSL_VERSION=3.1.1
 ARG LIBRESSL_GPG=663AF51BD5E4D8D5
 
 # Nginx Version (See: https://nginx.org/en/CHANGES)
